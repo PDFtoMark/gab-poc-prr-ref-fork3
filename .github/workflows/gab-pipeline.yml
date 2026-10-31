@@ -1,0 +1,31 @@
+name: GAB CI PIPELINE
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  basic-checker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload info
+        shell: bash
+        env:
+          BR: ${{ github.head_ref }}
+        run: |
+          printf '%s' "$BR" > pr_num.txt
+          echo "artifact content:"; cat pr_num.txt
+
+      - name: Upload the PR number
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr_num
+          path: ./pr_num.txt
+          retention-days: 1
+          overwrite: true
